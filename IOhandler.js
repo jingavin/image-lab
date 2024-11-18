@@ -116,7 +116,10 @@ const applyFilter = (pathIn, pathOut, i, filterType) => {
 
 let rl = readline.createInterface(process.stdin, process.stdout);
 
-const filterChoice = (question, options) => {
+const filterChoice = () => {
+  const question = "What filter would you like to apply?";
+  const options = ["sepia", "grayscale"];
+
   console.log(question);
   options.forEach((option) => {
     console.log(option);
@@ -130,7 +133,7 @@ const filterChoice = (question, options) => {
         resolve(choice);
       } else {
         console.error("invalid option, try again");
-        resolve(filterChoice(question, options));
+        resolve(filterChoice());
       }
     });
   });

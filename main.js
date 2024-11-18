@@ -5,14 +5,11 @@ const zipFilePath = path.join(__dirname, "myfile.zip");
 const pathUnzipped = path.join(__dirname, "unzipped");
 const pathProcessed = path.join(__dirname, "filtered");
 
-const question = "What filter would you like to apply?";
-const options = ["sepia", "grayscale"];
-
 const main = async () => {
   try {
     await IOhandler.unzip(zipFilePath, pathUnzipped);
     const data = await IOhandler.readDir(pathUnzipped);
-    const selected = await IOhandler.filterChoice(question, options);
+    const selected = await IOhandler.filterChoice();
     await IOhandler.rl.close();
     await Promise.all(
       data.map((img, i) =>
