@@ -44,13 +44,15 @@ const unzip = async (pathIn, pathOut) => {
 const readDir = async (dir) => {
   try {
     const files = await fs.promises.readdir(dir);
-    const photoPathFilter = await files.filter((png) => {
+    const photoPathFilter = files.filter((png) => {
       // swap includes for path.extname
       return path.extname(png) === ".png";
     });
+    console.log(photoPathFilter);
     const photoPath = photoPathFilter.map((fullPath) => {
       return path.join(dir, fullPath);
     });
+    console.log(photoPath);
     return photoPath;
   } catch (error) {
     console.log(error);
@@ -66,6 +68,7 @@ const readDir = async (dir) => {
  * @return {promise}
  */
 const applyFilter = (pathIn, pathOut, i, filterType) => {
+  //add error handling
   return new Promise(async (resolve, reject) => {
     await fs.promises.mkdir(`${pathOut}`, { recursive: true });
     fs.createReadStream(pathIn)
@@ -92,8 +95,19 @@ const applyFilter = (pathIn, pathOut, i, filterType) => {
           }
         }
         worker.postMessage({ pixels, filterType });
-
+        // get rid of the loop and assign to this.data
         worker.once("message", (processedPixels) => {
+          // console.log(this.data.toString());
+          // let newVals;
+          // [newVals] = processedPixels;
+          // console.log(processedPixels);
+          // const { idx, r, g, b } = newVals;
+
+          // console.log(r, g, b);
+          // this.data[idx] = r;
+          // this.data[idx + 1] = g;
+          // this.data[idx + 2] = b;
+
           processedPixels.forEach((pixel) => {
             const { idx, r, g, b } = pixel;
             this.data[idx] = r;
@@ -118,7 +132,7 @@ let rl = readline.createInterface(process.stdin, process.stdout);
 
 const filterChoice = () => {
   const question = "What filter would you like to apply?";
-  const options = ["sepia", "grayscale"];
+  const options = ["sepia", "grayscale", "invert"];
 
   console.log(question);
   options.forEach((option) => {
@@ -129,7 +143,7 @@ const filterChoice = () => {
     rl.question("Choose an option: ", (answer) => {
       const choice = answer.toLowerCase();
       console.log(choice);
-      if (choice === "grayscale" || choice === "sepia") {
+      if (options.includes(choice)) {
         resolve(choice);
       } else {
         console.error("invalid option, try again");

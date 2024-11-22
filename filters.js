@@ -10,6 +10,9 @@ parentPort.on("message", (data) => {
     } else if (filterType === "grayscale") {
       const processedPixel = addGrayFilter(r, g, b);
       return { idx, ...processedPixel };
+    } else if (filterType === "invert") {
+      const processedPixel = invertFilter(r, g, b);
+      return { idx, ...processedPixel };
     } else {
       return { idx, r, g, b };
     }
@@ -29,4 +32,11 @@ const applySepiaFilter = (r, g, b) => {
 const addGrayFilter = (red, green, blue) => {
   const gray = red * 0.3 + green * 0.59 + blue * 0.11;
   return { r: gray, g: gray, b: gray };
+};
+
+const invertFilter = (r, g, b) => {
+  const newR = 255 - r;
+  const newG = 255 - g;
+  const newB = 255 - b;
+  return { r: newR, g: newG, b: newB };
 };
